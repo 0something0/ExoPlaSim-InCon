@@ -318,50 +318,59 @@ def baltoggle ():
 txtcol = '#0f0f9f'
 
 def system_check():
-    os.system('cls' if os.name == 'nt' else "printf '\033c'")
-    print("Configuration Compatability Check:")
+
+    returnString = ""
+
+    returnString += "Configuration Compatability Check:\n"
     check_year = orbp_var.get()
     check_day = rot_var.get()
     check_time = tmestp_var.get()
     check_run = runstp_var.get()
     check_nsptw = nsptw_var.get()
     time_check = (24*60)/check_time
+
     if time_check == round(time_check):
-        print("Timestep: Nominal")
+        returnString += "Timestep: Nominal\n"
     else:
-        print("WARNING: Current Timestep setting places ratio between (24*60) and timestep at "+str(time_check)+" which may cause problems with ExoPlaSim.")
+        returnString += "WARNING: Current Timestep setting places ratio between (24*60) and timestep at "+str(time_check)+" which may cause problems with ExoPlaSim.\n"
         time_corct = (24*60)/round(time_check)
-        print("Setting it to "+str(time_corct)+" or a factor of a 24 hour day will work better.")
+        returnString += "Setting it to "+str(time_corct)+" or a factor of a 24 hour day will work better.\n"
+
     nsptw_check = (check_nsptw*check_time)/1440
     if 4 <= nsptw_check <= 6:
-        print("NSPTW: Nominal")
+        returnString += "NSPTW: Nominal\n"
     else:
-        print("WARNING: Current NSPTW setting places day interval at "+str(nsptw_check)+" which may cause problems with ExoPlaSim.")
-        print("Changing this to be between 4 and 6 will work better.")
+        returnString += "WARNING: Current NSPTW setting places day interval at "+str(nsptw_check)+" which may cause problems with ExoPlaSim.\n"
+        returnString += "Changing this to be between 4 and 6 will work better.\n"
+
     run_check = check_run/check_nsptw
     if run_check == round(run_check):
-        print("Runsteps: Nominal")
+        returnString += "Runsteps: Nominal\n"
     else:
-        print("WARNING: Current Runsteps setting places ratio between runsteps and NSPTW at "+str(run_check)+" which may cause problems with ExoPlaSim.")
-        print("Setting it to a factor of a 24 hour day will work better.")
+        returnString += "WARNING: Current Runsteps setting places ratio between runsteps and NSPTW at "+str(run_check)+" which may cause problems with ExoPlaSim.\n"
+        returnString += "Setting it to a factor of a 24 hour day will work better.\n"
     year_check = (check_year*1440)/(check_run*check_time)
+
     if year_check == 1:
-        print("Year: Nominal")
+        returnString += "Year: Nominal\n"
     else:
-        print("WARNING: Current Year length places the ratio between (year*1440) and (runsteps*timestep) at "+str(round(year_check, 6))+" which may cause problems with ExoPlaSim.")
+        returnString += "WARNING: Current Year length places the ratio between (year*1440) and (runsteps*timestep) at "+str(round(year_check, 6))+" which may cause problems with ExoPlaSim.\n"
         year_corct = (round(year_check)*(check_run*check_time))/1440
-        print("Changing this to "+str(year_corct)+" will work better.")
+        returnString += "Changing this to "+str(year_corct)+" will work better.\n"
     day_check1 = (check_day*1440)/check_time
     day_check2 = (check_run/12)/((check_day*1440)/check_time)
+
     if day_check1 == round(day_check1):
         if day_check2 == round(day_check2):
-            print("Day: Nominal")
+            returnString += "Day: Nominal\n"
         else:
-            print("WARNING: Current day length places ratio between (runsteps/12) and ((day*1440)/timestep) at "+str(day_check2)+" which may cause problems with ExoPlaSim.")
-            print("Changeing this to an integer will work better.")
+            returnString += "WARNING: Current day length places ratio between (runsteps/12) and ((day*1440)/timestep) at "+str(day_check2)+" which may cause problems with ExoPlaSim.\n"
+            returnString += "Changeing this to an integer will work better.\n"
     else:
-        print("WARNING: Current day length places ratio between (day*1440) and timestep at "+str(day_check1)+" which may cause problems with ExoPlaSim.")
-        print("Changing this to an integer will work better.")
+        returnString += "WARNING: Current day length places ratio between (day*1440) and timestep at "+str(day_check1)+" which may cause problems with ExoPlaSim.\n"
+        returnString += "Changing this to an integer will work better.\n"
+
+    return returnString
 
 def save_file():
     """Save the current file."""
@@ -1673,10 +1682,19 @@ kprststog_n.grid(row=18, column=2, sticky="w")
 #------------------------------------------------------------------------------------------------------------
 
 #Check
+
+#cant figure out how to fit multiple methods into a single lamda
+def printCompat():
+    ht.printToText(statusBox, system_check())
+    ht.printToTerminal(system_check())
+
 compat = Label(text="Compatability")
 compat.grid(row=3, column=7, sticky="n")
-sys_check = Button(text="Compatability Check", command=system_check)
+sys_check = Button(text="Compatability Check", command=printCompat)
 sys_check.grid(row=4, column=7, sticky="n")
+
+#    ht.printToTerminal(returnString)
+#    ht.printToText(returnString)
 
 #Save
 output = Label(text="Output")

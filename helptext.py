@@ -477,11 +477,15 @@ HELP_DICT = {
 def helpTextTk(entry, element, event):
 
     if isinstance(element, tkinter.Text):
-        element.delete('1.0', tkinter.END)
-        element.insert('1.0', HELP_DICT[entry])
-    helpText(entry, event)
+        printToText(element, HELP_DICT[entry])
+    printToTerminal(HELP_DICT[entry], event)
 
-def helpText(entry, event):
+#is used by other files
+def printToText(element, string):
+    element.delete('1.0', tkinter.END)
+    element.insert('1.0', string)
+
+def printToTerminal(string):
     os.system('cls' if os.name == 'nt' else "printf '\033c'")
-    print(HELP_DICT[entry])
+    print(string)
 
