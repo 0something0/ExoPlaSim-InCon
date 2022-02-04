@@ -1665,11 +1665,8 @@ def printCompat():
 
 compat = Label(text="Compatability")
 compat.grid(row=2, column=7, sticky="s")
-sys_check = Button(text="Compatability Check", command=system_check)
+sys_check = Button(text="Compatability Check", command=printCompat)
 sys_check.grid(row=3, column=7, sticky="n")
-
-#    ht.printToTerminal(returnString)
-#    ht.printToText(returnString)
 
 #Save
 output = Label(text="Output")
