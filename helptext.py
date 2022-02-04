@@ -464,7 +464,7 @@ def helpTextTk(entry, element, event):
 
     if isinstance(element, tkinter.Text):
         printToText(element, HELP_DICT[entry])
-    printToTerminal(HELP_DICT[entry], event)
+    printToTerminal(HELP_DICT[entry])
 
 #is used by other files
 def printToText(element, string):
