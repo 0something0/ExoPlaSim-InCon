@@ -708,16 +708,8 @@ default_font = font.nametofont("TkDefaultFont")
 default_font.configure(size=7)
 text_font = font.nametofont("TkTextFont")
 text_font.configure(size=7)
-
-
-#Status
-statusContainer = LabelFrame(master=window, relief=GROOVE,borderwidth=3, text="status")
-statusContainer.grid(padx=10, pady=10, row=5, column=1, columnspan=9, sticky=E+W+N+S)
-statusContainer.rowconfigure(0, weight=1)
-statusContainer.columnconfigure(0, weight=1)
-
-statusBox = Text(master=statusContainer)
-statusBox.grid( padx=3, pady=3, sticky=E+W+N+S)
+help_font = font.nametofont("TkFixedFont")
+help_font.configure(size=7)
 
 #Frame creation method
 def createColFrame(rowIn, colIn, gridIndex):
@@ -738,9 +730,9 @@ def createOptionLabel(masterIn, textIn, helpText, rowIn, colIn):
     label.grid(row=rowIn, column=colIn, sticky="w")
     return label
 
-#------------------------------------------------------------------------------------------------------------ DONE
-#------------------------------------------------------------------------------------------------------------ DONE
-#------------------------------------------------------------------------------------------------------------ DONE
+#------------------------------------------------------------------------------------------------------------
+#------------------------------------------------------------------------------------------------------------
+#------------------------------------------------------------------------------------------------------------
 
 col_one_frame = createColFrame(1, 1, [2,4,6])
 
@@ -794,7 +786,6 @@ pres_n = OptionMenu(modpar_frame, pres_var, *pres_options)
 pres_n.config(width=6)
 pres_n.grid(row=5, column=2, sticky="w")
 
-
 #Resolution
 resolution = createOptionLabel(masterIn=modpar_frame, textIn="Resolution: ", helpText="helpresolution", rowIn=6, colIn=1)
 res_options = ["T21", "T21", "T42", "T63", "T85", "T106", "T127", "T170"]
@@ -804,8 +795,6 @@ res_var.set(res_options[0])
 res = OptionMenu(modpar_frame, res_var, *res_options)
 res.config(width=6)
 res.grid(row=6,column=2, sticky="w")
-
-
 
 #Crash Tolerant
 crash = resolution = createOptionLabel(masterIn=modpar_frame, textIn="Crash Tolerant: ", helpText="helpcrshtlrnt", rowIn=7, colIn=1)
@@ -910,10 +899,9 @@ fixedorb.grid(row=6, column=2, sticky="w")
 
 col_two_frame = createColFrame(1, 3, [2,4])
 
-
-#---------------------------------------------------------------------------DONE
-#---------------------------------------------------------------------------DONE
-#---------------------------------------------------------------------------DONE
+#---------------------------------------------------------------------------
+#---------------------------------------------------------------------------
+#---------------------------------------------------------------------------
 
 #Rotational Parameter Frame
 
@@ -1004,9 +992,9 @@ desertp_n = Checkbutton(master=planetpar_frame,variable=desertp_var,command=dsrt
 desertp_n.config(state='enabled')
 desertp_n.grid(row=5, column=2, sticky="w")
 
-#---------------------------------------------------------------------------DONE
-#---------------------------------------------------------------------------DONE
-#---------------------------------------------------------------------------DONE
+#---------------------------------------------------------------------------
+#---------------------------------------------------------------------------
+#---------------------------------------------------------------------------
 
 #Vegetation Parameter Frame
 
@@ -1024,8 +1012,6 @@ vegetat_var.set(vegetat_options[0])
 vegetat_n = OptionMenu(vegpar_frame, vegetat_var, *vegetat_options, command=vegtoggle)
 vegetat_n.config(width=7)
 vegetat_n.grid(row=1, column=2, sticky="w")
-
-
 
 #Veg. Acceleration
 vegacce = createOptionLabel(masterIn=vegpar_frame, textIn="Veg. Acceleration: ", helpText="helpvgaclrtn", rowIn=2, colIn=1)
@@ -1094,9 +1080,7 @@ col_three_frame = createColFrame(1, 5, [2])
 #---------------------------------------------------------------------------
 
 #Surface Parameter Frame
-
 surfpar_frame = createParameterFrame(masterIn=col_three_frame, rowIn=1, colIn=1, gridIndex=[1,2,3,4,5,6,7,8,9,10,11,12])
-
 surfparam = Label(master=surfpar_frame,text="Surface Parameters")
 surfparam.grid(row=0,column=1,columnspan=3,sticky="n")
 
@@ -1241,14 +1225,11 @@ oceanzen_n = OptionMenu(surfpar_frame, oceanzen_var, *oceanzen_options)
 oceanzen_n.config(width=7)
 oceanzen_n.grid(row=12,column=2, sticky="w")
 
-
-
 #---------------------------------------------------------------------------
 #---------------------------------------------------------------------------
 #---------------------------------------------------------------------------
 
 #Geographic Parameter Frame
-
 geopar_frame = createParameterFrame(masterIn=col_three_frame, rowIn=3, colIn=1, gridIndex=[1,2,3,4,5,6,7,8,9])
 
 geoparam = Label(master=geopar_frame,text="Geographic Parameters")
@@ -1347,7 +1328,6 @@ col_four_frame.rowconfigure([2,4], minsize=10, weight=1)
 #---------------------------------------------------------------------------
 
 #Atmospheric Parameter Frame
-
 atmpar_frame = createParameterFrame(masterIn=col_four_frame, rowIn=1, colIn=1, gridIndex=[1,2,3,4,5,6,7,8,9,10,11,12,13,14])
 
 atmparam = Label(master=atmpar_frame,text="Atmospheric Parameters")
@@ -1486,7 +1466,6 @@ pCO2_n.grid(row=14, column=2, sticky="w")
 #---------------------------------------------------------------------------
 
 #Glacial Parameter Frame
-
 glacpar_frame = createParameterFrame(masterIn=col_four_frame, rowIn=3, colIn=1, gridIndex=[1,2,3])
 glacpar_frame.columnconfigure([2], minsize=80)
 
@@ -1574,8 +1553,6 @@ phyfilt1_n = OptionMenu(mdldynpar_frame, phyfilt1_var, *phyfilt1_options)
 phyfilt1_n.config(width=7)
 phyfilt1_n.grid(row=5,column=2, sticky="w")
 
-
-
 #Physics Filter 2
 phyfilt2 = createOptionLabel(masterIn=mdldynpar_frame, textIn="Filter Application: ", helpText="helpfltrapp", rowIn=6, colIn=1)
 phyfilt2_options = ["None", "None", "GP", "SP", "GP + SP"]
@@ -1585,8 +1562,6 @@ phyfilt2_var.set(oceanzen_options[0])
 phyfilt2_n = OptionMenu(mdldynpar_frame, phyfilt2_var, *phyfilt2_options)
 phyfilt2_n.config(width=7)
 phyfilt2_n.grid(row=6,column=2, sticky="w")
-
-
 
 #Storm Climatology
 stormcl = createOptionLabel(masterIn=mdldynpar_frame, textIn="Storm Climatology: ", helpText="helpstmclmtlgy", rowIn=7, colIn=1)
@@ -1689,17 +1664,27 @@ def printCompat():
     ht.printToTerminal(system_check())
 
 compat = Label(text="Compatability")
-compat.grid(row=3, column=7, sticky="n")
-sys_check = Button(text="Compatability Check", command=printCompat)
-sys_check.grid(row=4, column=7, sticky="n")
+compat.grid(row=2, column=7, sticky="s")
+sys_check = Button(text="Compatability Check", command=system_check)
+sys_check.grid(row=3, column=7, sticky="n")
 
 #    ht.printToTerminal(returnString)
 #    ht.printToText(returnString)
 
 #Save
 output = Label(text="Output")
-output.grid(row=3, column=9, sticky="n")
+output.grid(row=2, column=9, sticky="s")
 save = Button(text="Save", command=save_file)
-save.grid(row=4, column=9, sticky="n")
+save.grid(row=3, column=9, sticky="n")
+
+#Status
+statusContainer = LabelFrame(relief=GROOVE, borderwidth=3, text="Status")
+statusContainer.grid(padx=10, pady=10, row=4, column=1, rowspan=3, columnspan=9, sticky="new")
+statusContainer.rowconfigure(0, weight=1)
+statusContainer.columnconfigure(0, weight=1)
+
+statusBox = Text(master=statusContainer, height=8)
+statusBox.configure(font=help_font)
+statusBox.grid(padx=3, pady=3, row=0, column=0,sticky="nsew")
 
 window.mainloop()
