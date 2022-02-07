@@ -110,11 +110,14 @@ def convert_sra(filepath, infile, grav, debug_img, desert_planet, floor_value, p
         img.save(sra_path+"LandMaskOriginal.png")
         print("Debug Image 1 printed...")
 
+    height = img_height
+    width = img_width
     #Image rescaling
     options = {"T21": 32,"T42": 64,"T63": 96,"T85": 128,"T106": 160,"T127": 192,"T170": 256}
     if resotext in options:
         height = options[resotext]
         width = 2*height
+
 
     scale_width = img_width/width               #finds the ratio between starting and final width
     scale_height = img_height/height            #finds the ratio between starting and final height
@@ -187,3 +190,5 @@ def convert_sra(filepath, infile, grav, debug_img, desert_planet, floor_value, p
     print("Formatting...")
     landmaptext = 'landmap="SRA/'+sra_name+'_surf_0172.sra",'
     topomaptext = 'topomap="SRA/'+sra_name+'_surf_0129.sra",'
+
+    return landmaptext, topomaptext

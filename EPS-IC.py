@@ -490,7 +490,7 @@ def save_file():
         aquaplanetext = ''
         if imgsratext == "False":
 
-            convert_sra(
+            landmaptext, topomaptext = convert_sra(
                 filepath=filepath,
                 infile=hghtimgpath,
                 grav=float(gravtext),
