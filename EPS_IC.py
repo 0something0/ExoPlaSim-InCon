@@ -1,3 +1,4 @@
+import copy
 import sys
 import os
 from os import path
@@ -14,6 +15,8 @@ from tkinter.filedialog import askopenfilename, asksaveasfilename
 
 from convert_sra import convert_sra
 import helptext as ht
+
+import IC_modelMethods as model
 
 #Toggle Values
 tidaltog = 0
@@ -317,387 +320,31 @@ def baltoggle ():
 #Functions
 txtcol = '#0f0f9f'
 
-def system_check():
+def strip_vardict(variables):
+    vars_to_pass = variables.copy()
+    #iterate over every value in vars_to_pass
+    for key, value in vars_to_pass.items():
+        vars_to_pass[key] = value.get()
 
-    returnString = ""
+    return vars_to_pass
 
-    returnString += "Configuration Compatability Check:\n"
-    check_year = variables["orbp_var"].get()
-    check_day = variables["rot_var"].get()
-    check_time = variables["tmestp_var"].get()
-    check_run = variables["runstp_var"].get()
-    check_nsptw = variables["nsptw_var"].get()
-    time_check = (24*60)/check_time
+def system_check(variables):
+    return model.system_check(strip_vardict(variables))
 
-    if time_check == round(time_check):
-        returnString += "Timestep: Nominal\n"
-    else:
-        returnString += "WARNING: Current Timestep setting places ratio between (24*60) and timestep at "+str(time_check)+" which may cause problems with ExoPlaSim.\n"
-        time_corct = (24*60)/round(time_check)
-        returnString += "Setting it to "+str(time_corct)+" or a factor of a 24 hour day will work better.\n"
+def save_file(variables):
 
-    nsptw_check = (check_nsptw*check_time)/1440
-    if 4 <= nsptw_check <= 6:
-        returnString += "NSPTW: Nominal\n"
-    else:
-        returnString += "WARNING: Current NSPTW setting places day interval at "+str(nsptw_check)+" which may cause problems with ExoPlaSim.\n"
-        returnString += "Changing this to be between 4 and 6 will work better.\n"
-
-    run_check = check_run/check_nsptw
-    if run_check == round(run_check):
-        returnString += "Runsteps: Nominal\n"
-    else:
-        returnString += "WARNING: Current Runsteps setting places ratio between runsteps and NSPTW at "+str(run_check)+" which may cause problems with ExoPlaSim.\n"
-        returnString += "Setting it to a factor of a 24 hour day will work better.\n"
-    year_check = (check_year*1440)/(check_run*check_time)
-
-    if year_check == 1:
-        returnString += "Year: Nominal\n"
-    else:
-        returnString += "WARNING: Current Year length places the ratio between (year*1440) and (runsteps*timestep) at "+str(round(year_check, 6))+" which may cause problems with ExoPlaSim.\n"
-        year_corct = (round(year_check)*(check_run*check_time))/1440
-        returnString += "Changing this to "+str(year_corct)+" will work better.\n"
-    day_check1 = (check_day*1440)/check_time
-    day_check2 = (check_run/12)/((check_day*1440)/check_time)
-
-    if day_check1 == round(day_check1):
-        if day_check2 == round(day_check2):
-            returnString += "Day: Nominal\n"
-        else:
-            returnString += "WARNING: Current day length places ratio between (runsteps/12) and ((day*1440)/timestep) at "+str(day_check2)+" which may cause problems with ExoPlaSim.\n"
-            returnString += "Changeing this to an integer will work better.\n"
-    else:
-        returnString += "WARNING: Current day length places ratio between (day*1440) and timestep at "+str(day_check1)+" which may cause problems with ExoPlaSim.\n"
-        returnString += "Changing this to an integer will work better.\n"
-
-    return returnString
-
-def save_file():
     """Save the current file."""
     filepath = asksaveasfilename(
-        defaultextension="py",
+        defaultextension=".py",
         filetypes=[("Python Files", "*.py"), ("All Files", "*.*")],
     )
     if not filepath:
         return
-#Getting input text
-    os.system('cls' if os.name == 'nt' else "printf '\033c'")
-    nametext = str(variables["name_var"].get())
-    yeartext = str(variables["year_var"].get())
-    typetext = str(variables["output_var"].get())
-    cpustext = str(variables["cpu_var"].get())
-    prestext = str(variables["res_var"].get())
-    resotext = str(variables["res_var"].get())
-    crastext = str(variables["crash_var"].get())
-    layertext = str(variables["layers_var"].get())
-    recomptext = str(variables["recom_var"].get())
-    startext = str(variables["startemp_var"].get())
-    fluxtext = str(variables["flux_var"].get())
-    orbptext = str(variables["orbp_var"].get())
-    eccetext = str(variables["ecc_var"].get())
-    oblitext = str(variables["obli_var"].get())
-    lonvtext = str(variables["lon_var"].get())
-    fixotext = str(variables["fixed_var"].get())
-    rotptext = str(variables["rot_var"].get())
-    tidltext = str(variables["tidal_var"].get())
-    steltext = str(variables["lon_var"].get())
-    dsynctext = str(variables["desync_var"].get())
-    tmpcntext = str(variables["tempcon_var"].get())
-    gravtext = str(variables["gravity_var"].get())
-    radustext = str(variables["radius_var"].get())
-    orogtext = str(variables["orogph_var"].get())
-    aquaptext = str(variables["aquap_var"].get())
-    dsrtptext = str(variables["desertp_var"].get())
-    vegtext = str(variables["vegetat_var"].get())
-    vacctext = str(variables["vegacce_var"].get())
-    biogrwtext = str(variables["nfrtgrw_var"].get())
-    initgrwtext = str(variables["initgrw_var"].get())
-    stomatext = str(variables["initstcd_var"].get())
-    vroughtext = str(variables["initrgh_var"].get())
-    slcartext = str(variables["initslc_var"].get())
-    pltcartext = str(variables["initplc_var"].get())
-    wtsoiltext = str(variables["wetso_var"].get())
-    slalbtext = str(variables["soilalbtog_var"].get())
-    solalbtext = str(variables["soilalb_var"].get())
-    sldpthtext = str(variables["soildepthtog_var"].get())
-    soldpthtext = str(variables["soildepth_var"].get())
-    cpsltext = str(variables["capsoiltog_var"].get())
-    capsoltext = str(variables["capsoil_var"].get())
-    slwcptext = str(variables["soilwcptog_var"].get())
-    solwcptext = str(variables["soilwcp_var"].get())
-    slsattext = str(variables["soilsattog_var"].get())
-    solsattext = str(variables["soilsat_var"].get())
-    snwalbtext = str(variables["snowalbtog_var"].get())
-    snowalbtext = str(variables["snowalb_var"].get())
-    mxsnwtext = str(variables["mxsnowtog_var"].get())
-    maxsnwtext = str(variables["mxsnow_var"].get())
-    sicetext = str(variables["seaice_var"].get())
-    ocnalbtext = str(variables["oceanalbtog_var"].get())
-    oceanalbtext = str(variables["oceanalb_var"].get())
-    mldphtext = str(variables["mldepthtog_var"].get())
-    mixldphtext = str(variables["mldepth_var"].get())
-    ocnzntext = str(variables["oceanzen_var"].get())
-    imgsratext = str(variables["imgsratogtog_var"].get())
-    hghtimgpath = variables["hghtmpimg_var"].get()
-    wtrthreshtext = str(variables["res_var"].get())
-    hghelvtext = str(variables["highelev_var"].get())
-    lwelvtext = str(variables["lowelev_var"].get())
-    imgdbgtext = str(variables["imgdebugtog_var"].get())
-    sranmetext = str(variables["sranme_var"].get())
-    landsratext = str(variables["lndsra_var"].get())
-    toposratext = str(variables["tposra_var"].get())
-    prssretogtext = str(variables["pressuretog_var"].get())
-    pressuretext = str(variables["pressure_var"].get())
-    gascontogtext = str(variables["gascontog_var"].get())
-    gascontext = str(variables["gascon_var"].get())
-    drycretext = str(variables["drycoretog_var"].get())
-    ozonetext = str(variables["ozone_var"].get())
-    prtlprssretext = str(variables["partialptog_var"].get())
-    H2text = str(variables["pH2_var"].get())
-    Hetext = str(variables["pHe_var"].get())
-    N2text = str(variables["pN2_var"].get())
-    O2text = str(variables["pO2_var"].get())
-    Artext = str(variables["pAr_var"].get())
-    Netext = str(variables["pNe_var"].get())
-    Krtext = str(variables["pKr_var"].get())
-    H2Otext = str(variables["pH2O_var"].get())
-    CO2text = str(variables["pCO2_var"].get())
-    glaciertext = str(variables["glacialtog_var"].get())
-    initheightext = str(variables["inith_var"].get())
-    mindepthtext = str(variables["mndph_var"].get())
-    timesteptext = str(variables["tmestp_var"].get())
-    runsteptext = str(variables["runstp_var"].get())
-    snapshotext = str(variables["snpsht_var"].get())
-    nsptwtext = str(variables["nsptw_var"].get())
-    physics1text = str(variables["phyfilt1_var"].get())
-    physics2text = str(variables["phyfilt2_var"].get())
-    stormtext = str(variables["stormcltog_var"].get())
-    highcadtext = str(variables["highcadtog_var"].get())
-    runtobaltext = str(variables["rntbaltog_var"].get())
-    runtimetext = str(variables["runtme_var"].get())
-    thresholdtext = str(variables["trshld_var"].get())
-    baselinetext = str(variables["bselne_var"].get())
-    maxyeartext = str(variables["maxyr_var"].get())
-    minyeartext = str(variables["minyr_var"].get())
-    crashbrkntext = str(variables["cshibrktog_var"].get())
-    cleantext = str(variables["cleantog_var"].get())
-    allyearstext = str(variables["allyrstog_var"].get())
-    keeprstrtstext = str(variables["kprststog_var"].get())
-    print("Inputs gathered...")
 
-    """Convert heightmap image to SRA files."""
-    if aquaptext == "False":
-        aquaplanetext = ''
-        if imgsratext == "False":
 
-            landmaptext, topomaptext = convert_sra(
-                filepath=filepath,
-                infile=hghtimgpath,
-                grav=float(gravtext),
-                debug_img= (imgdbgtext=="True"),
-                desert_planet=(dsrtptext=="True"),
-                floor_value=int(wtrthreshtext),
-                peak_value=float(hghelvtext),
-                trench_value=float(lwelvtext),
-                resotext=resotext,
-                sra_name=sranmetext
-            )
+    return model.save_file(strip_vardict(variables), filepath)
+    
 
-            
-        else:
-            lndsrafle = ntpath.basename(landsratext)
-            tposrafle = ntpath.basename(toposratext)
-            sra_path = path.dirname(filepath)+'/SRA'
-            try:
-                os.makedirs(sra_path)
-            except FileExistsError:
-                # directory already exists
-                pass
-            shutil.copyfile(landsratext, sra_path)
-            shutil.copyfile(toposratext, sra_path)
-            landmaptext = 'landmap="SRA/'+lndsrafle+'",'
-            topomaptext = 'topomap="SRA/'+tposrafle+'"<'
-    else:
-        print("Formatting...")
-        aquaplanetext = 'aquaplanet=True,'
-        landmaptext = ''
-        topomaptext = ''
-    if dsrtptext == "True":
-        dsrtplanetext = 'desertplanet=True,'
-    else:
-        dsrtplanetext = ''
-
-    #Conditions
-    if crastext == "True":
-        crashtext = ',crashtolerant='+crastext
-    else:
-        crashtext = ''
-    if recomptext == "True":
-        recomtext = ',recompile='+recomptext
-    else:
-        recomtext = ''
-    if tidltext == "True":
-        rottext = 'synchronous='+tidltext+',substellarlon='+steltext+',desync='+dsynctext+',tlcontrast='+tmpcntext
-    else:
-        rottext = 'rotationperiod='+rotptext
-    if vegtext == "None":
-        vegetationtext = ''
-    else:
-        if vegtext == "Proscribed":
-            vegstat = '				  vegetation=1'+',vegaccel='+vacctext+',nforestgrowth='+biogrwtext+',initgrowth='+initgrwtext
-        elif vegtext == "Dynamic":
-            vegstat = '				  vegetation=2'+',vegaccel='+vacctext+',nforestgrowth='+biogrwtext+',initgrowth='+initgrwtext
-        vegetationtext = vegstat+',initstomcond='+stomatext+',initrough='+vroughtext+',initsoilcarbon='+slcartext+',initplantcarbon='+pltcartext+',\n'
-    if slalbtext == "True":
-        soilalbtext = ",soilalbedo="+solalbtext
-    else:
-        soilalbtext = ''
-    if sldpthtext == "True":
-        soildepthtext = ",soildepth="+soldpthtext
-    else:
-        soildepthtext = ''
-    if cpsltext == "True":
-        soilhcaptext = ",cpsoil="+capsoltext
-    else:
-        soilhcaptext = ''
-    if slwcptext == "True":
-        soilwcaptext = ",soilwatercap="+solwcptext
-    else:
-        soilwcaptext = ''
-    if slsattext == "True":
-        soilsattext = ",soilsaturation="+solsattext
-    else:
-        soilsattext = ''
-    if snwalbtext == "True":
-        snowalbtext = ",snowicealbedo="+snowalbtext
-    else:
-        snowalbtext = ''
-    if mxsnwtext == "True":
-        maxsnowtext = ",maxsnow="+maxsnwtext
-    else:
-        maxsnowtext = ''
-    if ocnalbtext == "True":
-        oceanalbtext = ",oceanalbedo="+oceanalbtext
-    else:
-        oceanalbtext = ''
-    if mldphtext == "True":
-        mixedlyrtext = ",mldepth="+mixldphtext
-    else:
-        mixedlyrtext = ''
-    surfacetext1 = wtsoiltext+soilalbtext+soildepthtext+soilhcaptext+soilwcaptext+soilsattext+snowalbtext
-    surfacetext2 = maxsnowtext+',seaice='+sicetext+oceanalbtext+mixedlyrtext+',oceanzenith="'+ocnzntext+'",\n'
-    if prssretogtext == "True":
-        atmospheretext = "pressure="+pressuretext+','
-    else:
-        atmospheretext = ''
-    if gascontogtext == "True":
-        atmospheretext = atmospheretext+'gascon='+gascontext+','
-    else:
-        atmospheretext = atmospheretext+''
-    if drycretext == "True":
-        atmospheretext = atmospheretext+'drycore=True,'
-    else:
-        atmospheretext = atmospheretext+'drycore=False,'
-    if ozonetext == "True":
-        atmospheretext = atmospheretext+'ozone=True,'
-    else:
-        atmospheretext = atmospheretext+'ozone=False,'
-    if prtlprssretext == "True":
-        ppressuretext = "				  pH2="+H2text+',pHe='+Hetext+',pN2='+N2text+',pO2='+O2text+',pAr='+Artext+',pNe='+Netext+',pKr='+Krtext+',pH2O='+H2Otext+',pCO2='+CO2text+',\n'
-    else:
-        ppressuretext = ''
-    if glaciertext == "True":
-        glacialtext = "				  glacier={‘toggle’: True, ‘mindepth’: "+mindepthtext+', ‘initialh’: '+initheightext+'},\n'
-    else:
-        glacialtext = ''
-    snapshotext = int(snapshotext)
-    if snapshotext > 0:
-        snapshotstext = ',snapshots='+snapshotext
-    else:
-        snapshotstext = ''
-    if physics1text == "None":
-        physicstext = ''
-    elif physics1text == "Cesaro":
-        if physics2text == "None":
-            physicstext = ''
-        elif physics2text == "GP":
-            physicstext = ",physicsfilter='gp|cesaro'"
-        elif physics2text == "SP":
-            physicstext = ",physicsfilter='cesaro|sp'"
-        elif physics2text == "GP + SP":
-            physicstext = ",physicsfilter='gp|cesaro|sp'"
-    elif physics1text == "Exp":
-        if physics2text == "None":
-            physicstext = ''
-        elif physics2text == "GP":
-            physicstext = ",physicsfilter='gp|exp'"
-        elif physics2text == "SP":
-            physicstext = ",physicsfilter='exp|sp'"
-        elif physics2text == "GP + SP":
-            physicstext = ",physicsfilter='gp|exp|sp'"
-    elif physics1text == "Lh":
-        if physics2text == "None":
-            physicstext = ''
-        elif physics2text == "GP":
-            physicstext = ",physicsfilter='gp|lh'"
-        elif physics2text == "SP":
-            physicstext = ",physicsfilter='lh|sp'"
-        elif physics2text == "GP + SP":
-            physicstext = ",physicsfilter='gp|lh|sp'"
-    if stormtext == "True":
-        if highcadtext == "True":
-            stormstext = ",\n				  stormcapture={'toggle': 1,'NKTRIGGER': 1},highcadence={'toggle': 1,'start': 320,'interval': 4,'end': 576})\n"
-        else:
-            stormstext = ",\n				  stormcapture={'toggle': 1,'NKTRIGGER': 1})\n"
-    else:
-        stormstext = ')\n'
-    if runtobaltext == "True":
-        runtext = nametext+'.runtobalance(threshold='+thresholdtext+',baseline='+baselinetext+',maxyears='+maxyeartext+',minyears='+minyeartext
-    else:
-        runtext = nametext+'.run(years='+runtimetext
-
-#Formatting
-    format_name = "import exoplasim as exo\n"+nametext+' = exo.Model(workdir="'+nametext+'",modelname="'+nametext+'",'
-    format_model = "inityear="+yeartext+',outputtype="'+typetext+'",ncpus='+cpustext+',precision='+prestext+',resolution='+resotext+crashtext+',layers='+layertext+recomtext+')\n'
-    format_stellar = nametext+".configure(startemp="+startext+',flux='+fluxtext+',\n'
-    format_orbit = "				  year="+orbptext+',eccentricity='+eccetext+',obliquity='+oblitext+',lonvernaleq='+lonvtext+',fixedorbit='+fixotext+',\n'
-    format_rotation = "				  "+rottext+',\n'
-    format_planet = '				  gravity='+gravtext+',radius='+radustext+',orography='+orogtext+',\n'
-    format_vegetation = vegetationtext
-    format_surface = "				  wetsoil="+surfacetext1+surfacetext2
-    format_geography = "				  "+aquaplanetext+dsrtplanetext+landmaptext+topomaptext+'\n'
-    format_atmosphere = "				  "+atmospheretext+'\n'
-    format_ppressure = ppressuretext
-    format_glacier = glacialtext
-    format_timekeep = "				  timestep="+timesteptext+',runsteps='+runsteptext+snapshotstext+",otherargs={'NSTPW@plasim_namelist':'"+nsptwtext+"'}"+physicstext
-    format_storms = stormstext
-    format_export = nametext+".exportcfg()\n"
-    format_run = runtext+',crashifbroken='+crashbrkntext+',clean='+cleantext+')\n'
-    format_finalise = nametext+'.finalize(allyears='+allyearstext+',keeprestarts='+keeprstrtstext+')\n'
-    format_save = nametext+'.save()'
-    print("Formatting Complete...")
-#Writing to file
-    print("Saving Main File...")
-    with open(filepath, "w") as output_file:
-        output_file.write(format_name)
-        output_file.write(format_model)
-        output_file.write(format_stellar)
-        output_file.write(format_orbit)
-        output_file.write(format_rotation)
-        output_file.write(format_planet)
-        output_file.write(format_vegetation)
-        output_file.write(format_surface)
-        output_file.write(format_geography)
-        output_file.write(format_atmosphere)
-        output_file.write(format_ppressure)
-        output_file.write(format_glacier)
-        output_file.write(format_timekeep)
-        output_file.write(format_storms)
-        output_file.write(format_export)
-        output_file.write(format_run)
-        output_file.write(format_finalise)
-        output_file.write(format_save)
-        print("Saving Complete!")
 
 window = Tk()# Start the application
 window.title("ExoPlaSim: Input Configurator (EPS:IC)")
@@ -1664,8 +1311,8 @@ kprststog_n.grid(row=18, column=2, sticky="w")
 
 #cant figure out how to fit multiple methods into a single lamda
 def printCompat():
-    ht.printToText(statusBox, system_check())
-    ht.printToTerminal(system_check())
+    ht.printToText(statusBox, system_check(variables))
+    ht.printToTerminal(system_check(variables))
 
 compat = Label(text="Compatability")
 compat.grid(row=2, column=7, sticky="s")
@@ -1675,7 +1322,7 @@ sys_check.grid(row=3, column=7, sticky="n")
 #Save
 output = Label(text="Output")
 output.grid(row=2, column=9, sticky="s")
-save = Button(text="Save", command=save_file)
+save = Button(text="Save", command=lambda: save_file(variables))
 save.grid(row=3, column=9, sticky="n")
 
 #Status
