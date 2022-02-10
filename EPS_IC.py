@@ -18,45 +18,26 @@ import helptext as ht
 
 import IC_modelMethods as model
 
-#Toggle Values
-tidaltog = 0
-aquatog = 0
-desertog = 0
-soilalbtog = 0
-soildepthtog = 0
-capsoiltog = 0
-soilwcptog = 0
-soilsattog = 0
-snowalbtog = 0
-mxsnowtog = 0
-mldepthtog = 0
-oceanalbtog = 0
-imgsratogtog = 0
-pressuretog = 0
-gascontog = 0
-ptog = 0
-gtog = 0
-stmtog = 0
-baltog = 0
 
 #Toggle Functions
+def simpleToggle(toggle, input):
+    if toggle.get() == "False":
+        input.config(state='disabled')
+    elif toggle.get()== "True":
+        input.config(state='enabled')
+
 def tidaltoggle():
-    global tidaltog
-    if tidaltog == 0:
-        tidaltog = 1
+    if variables["tidal_var"].get() == 'True':
         stellon_n.config(state='enabled')
         desync_n.config(state='enabled')
         tempcon_n.config(state='enabled')
-    elif tidaltog == 1:
-        tidaltog = 0
+    else:
         stellon_n.config(state='disabled')
         desync_n.config(state='disabled')
         tempcon_n.config(state='disabled')
+
 def aquatoggle():
-    global aquatog
-    global imgsratogtog
-    if aquatog == 0:
-        aquatog = 1
+    if variables["aquap_var"].get() == "True":
         desertp_n.config(state='disabled')
         imgsratogtog_n.config(state='disabled')
         hghtmpimg_n.config(state='disabled')
@@ -70,11 +51,10 @@ def aquatoggle():
         lndsra_b.config(state='disabled')
         tposra_n.config(state='disabled')
         tposra_b.config(state='disabled')
-    elif aquatog == 1:
-        aquatog = 0
+    elif variables["aquap_var"].get() == "False":
         desertp_n.config(state='enabled')
         imgsratogtog_n.config(state='enabled')
-        if imgsratogtog == 0:
+        if variables["imgsratogtog_var"].get() == "False":
             hghtmpimg_n.config(state='enabled')
             hghtmpimg_b.config(state='enabled')
             waterhres_n.config(state='enabled')
@@ -85,7 +65,7 @@ def aquatoggle():
             lndsra_b.config(state='disabled')
             tposra_n.config(state='disabled')
             tposra_b.config(state='disabled')
-        elif imgsratogtog == 1:
+        elif variables["imgsratogtog_var"].get() == "True":
             hghtmpimg_n.config(state='disabled')
             hghtmpimg_b.config(state='disabled')
             waterhres_n.config(state='disabled')
@@ -96,62 +76,37 @@ def aquatoggle():
             lndsra_b.config(state='enabled')
             tposra_n.config(state='enabled')
             tposra_b.config(state='enabled')
+
 def dsrtoggle():
-    global desertog
-    global imgsratogtog
-    if desertog == 0:
-        desertog = 1
+    if variables["desertp_var"].get() == "True":
         aquap_n.config(state='disabled')
-        if imgsratogtog == 0:
+        #variables["aquaptog_var"] = "False" #looks like toggling the aquatog triggers the event just like if it had been done by user
+        
+        print(variables["imgsratogtog_var"].get())
+        if variables["imgsratogtog_var"].get() == "image":
             lowelev_n.config(state='enabled')
-    elif desertog == 1:
-        desertog = 0
+    elif variables["desertp_var"].get() == "False":
         aquap_n.config(state='enabled')
+        #variables["aquaptog_var"] = "True"
         lowelev_n.config(state='disabled')
+        
 def soilalbtoggle():
-    global soilalbtog
-    if soilalbtog == 0:
-        soilalbtog = 1
-        soilalb_n.config(state='enabled')
-    elif soilalbtog == 1:
-        soilalbtog = 0
-        soilalb_n.config(state='disabled')
+    simpleToggle(variables["soilalbtog_var"], soilalb_n)
+
 def soildepthtoggle():
-    global soildepthtog
-    if soildepthtog == 0:
-        soildepthtog = 1
-        soildepth_n.config(state='enabled')
-    elif soildepthtog == 1:
-        soildepthtog = 0
-        soildepth_n.config(state='disabled')
+    simpleToggle(variables["soildepthtog_var"], soildepth_n)
+
 def capsoiltoggle():
-    global capsoiltog
-    if capsoiltog == 0:
-        capsoiltog = 1
-        capsoil_n.config(state='enabled')
-    elif capsoiltog == 1:
-        capsoiltog = 0
-        capsoil_n.config(state='disabled')
+    simpleToggle(variables["capsoiltog_var"], capsoil_n)
+
 def soilwcptoggle():
-    global soilwcptog
-    if soilwcptog == 0:
-        soilwcptog = 1
-        soilwcp_n.config(state='enabled')
-    elif soilwcptog == 1:
-        soilwcptog = 0
-        soilwcp_n.config(state='disabled')
+    simpleToggle(variables["soilwcptog_var"], soilwcp_n)
+    
 def soilsattoggle():
-    global soilsattog
-    if soilsattog == 0:
-        soilsattog = 1
-        soilsat_n.config(state='enabled')
-    elif soilsattog == 1:
-        soilsattog = 0
-        soilsat_n.config(state='disabled')
+    simpleToggle(variables["soilsattog_var"], soilsat_n)
+
 def vegtoggle(self):
-    global variables
-    variables["vegetat_var"] = variables["vegetat_var"].get()
-    if variables["vegetat_var"] == "None":
+    if variables["vegetat_var"].get() == "None":
         vegacce_n.config(state='disabled')
         initgrw_n.config(state='disabled')
         nfrtgrw_n.config(state='disabled')
@@ -159,7 +114,7 @@ def vegtoggle(self):
         initrgh_n.config(state='disabled')
         initslc_n.config(state='disabled')
         initplc_n.config(state='disabled')
-    if variables["vegetat_var"] != "None":
+    else:
         vegacce_n.config(state='enabled')
         initgrw_n.config(state='enabled')
         nfrtgrw_n.config(state='enabled')
@@ -167,43 +122,22 @@ def vegtoggle(self):
         initrgh_n.config(state='enabled')
         initslc_n.config(state='enabled')
         initplc_n.config(state='enabled')
+
 def snowalbtoggle():
-    global snowalbtog
-    if snowalbtog == 0:
-        snowalbtog = 1
-        snowalb_n.config(state='enabled')
-    elif snowalbtog == 1:
-        snowalbtog = 0
-        snowalb_n.config(state='disabled')
+    simpleToggle(variables["snowalb_var"], snowalb_n)
+
 def mxsnowtoggle():
-    global mxsnowtog
-    if mxsnowtog == 0:
-        mxsnowtog = 1
-        mxsnow_n.config(state='enabled')
-    elif mxsnowtog == 1:
-        mxsnowtog = 0
-        mxsnow_n.config(state='disabled')
+    simpleToggle(variables["mxsnowtog_var"], mxsnow_n)
+
 def mldepthtoggle():
-    global mldepthtog
-    if mldepthtog == 0:
-        mldepthtog = 1
-        mldepth_n.config(state='enabled')
-    elif mldepthtog == 1:
-        mldepthtog = 0
-        mldepth_n.config(state='disabled')
+    simpleToggle(variables["mldepthtog_var"], mldepth_n)
+
 def oceanalbtoggle():
-    global oceanalbtog
-    if oceanalbtog == 0:
-        oceanalbtog = 1
-        oceanalb_n.config(state='enabled')
-    elif oceanalbtog == 1:
-        oceanalbtog = 0
-        oceanalb_n.config(state='disabled')
+    simpleToggle(variables["oceanalbtog_var"], oceanalb_n)
+
 def imgsratoggle():
-    global imgsratogtog
     global desertog
-    if imgsratogtog == 0:
-        imgsratogtog = 1
+    if variables["imgsratogtog_var"].get() == "sra": #SRA mode
         aquap_n.config(state='disabled')
         desertp_n.config(state='disabled')
         hghtmpimg_n.config(state='disabled')
@@ -217,15 +151,14 @@ def imgsratoggle():
         lndsra_b.config(state='enabled')
         tposra_n.config(state='enabled')
         tposra_b.config(state='enabled')
-    elif imgsratogtog == 1:
-        imgsratogtog = 0
+    elif variables["imgsratogtog_var"].get() == "image": #image mode
         aquap_n.config(state='enabled')
         desertp_n.config(state='enabled')
         hghtmpimg_n.config(state='enabled')
         hghtmpimg_b.config(state='enabled')
         waterhres_n.config(state='enabled')
         highelev_n.config(state='enabled')
-        if desertog == 1:
+        if variables["desertp_var"].get() == "True":
             lowelev_n.config(state='enabled')
         imgdebugtog_n.config(state='enabled')
         sranme_n.config(state='enabled')
@@ -233,35 +166,29 @@ def imgsratoggle():
         lndsra_b.config(state='disabled')
         tposra_n.config(state='disabled')
         tposra_b.config(state='disabled')
+
 def hghtimgget():
     filename = askopenfilename(filetypes=(("png files","*.png"),("All files","*.*")))
     variables["hghtmpimg_var"].set(filename) # add this
+
 def landsraget():
     filename = askopenfilename(filetypes=(("sra files","*.sra"),("All files","*.*")))
     variables["hghtmpimg_var"].set(filename) # add this
+
 def toposraget():
     filename = askopenfilename(filetypes=(("sra files","*.sra"),("All files","*.*")))
     variables["hghtmpimg_var"].set(filename) # add this
+
 def pressuretoggle():
-    global pressuretog
-    if pressuretog == 0:
-        pressuretog = 1
-        pressure_n.config(state='enabled')
-    elif pressuretog == 1:
-        pressuretog = 0
-        pressure_n.config(state='disabled')
+    simpleToggle(variables["pressuretog_var"], pressure_n)
+
 def gascontoggle():
-    global gascontog
-    if gascontog == 0:
-        gascontog = 1
-        gascon_n.config(state='enabled')
-    elif gascontog == 1:
-        gascontog = 0
-        gascon_n.config(state='disabled')
+    simpleToggle(variables["gascontog_var"], gascon_n)
+
 def ptoggle():
     global ptog
-    if ptog == 0:
-        ptog = 1
+    #if ptog == 0:
+    if variables["partialptog_var"].get() == "True":
         pH2_n.config(state='enabled')
         pHe_n.config(state='enabled')
         pN2_n.config(state='enabled')
@@ -271,8 +198,7 @@ def ptoggle():
         pKr_n.config(state='enabled')
         pH2O_n.config(state='enabled')
         pCO2_n.config(state='enabled')
-    elif ptog == 1:
-        ptog = 0
+    elif variables["partialptog_var"].get() == "False":
         pH2_n.config(state='disabled')
         pHe_n.config(state='disabled')
         pN2_n.config(state='disabled')
@@ -282,35 +208,30 @@ def ptoggle():
         pKr_n.config(state='disabled')
         pH2O_n.config(state='disabled')
         pCO2_n.config(state='disabled')
+
 def gtoggle():
     global gtog
-    if gtog == 0:
+    #if gtog == 0:
+    if variables["glacialtog_var"].get() == "True":
         gtog = 1
         inith_n.config(state='enabled')
         mndph_n.config(state='enabled')
-    elif gtog == 1:
-        gtog = 0
+    elif variables["glacialtog_var"].get() == "False":
         inith_n.config(state='disabled')
         mndph_n.config(state='disabled')
+
 def stmtoggle():
-    global stmtog
-    if stmtog == 0:
-        stmtog = 1
-        highcadtog_n.config(state='enabled')
-    elif stmtog == 1:
-        stmtog = 0
-        highcadtog_n.config(state='disabled')
+    simpleToggle(variables["stmtog_var"], highcadtog_n)
+    
 def baltoggle ():
     global baltog
-    if baltog == 0:
-        baltog = 1
+    if variables["rntbaltog_var"].get() == "True":
         runtme_n.config(state='disabled')
         trshld_n.config(state='enabled')
         bselne_n.config(state='enabled')
         maxyr_n.config(state='enabled')
         minyr_n.config(state='enabled')
-    elif baltog ==1:
-        baltog = 0
+    elif variables["rntbaltog_var"].get() == "False":
         runtme_n.config(state='enabled')
         trshld_n.config(state='disabled')
         bselne_n.config(state='disabled')
@@ -933,9 +854,9 @@ geoparam = Label(master=geopar_frame,text="Geographic Parameters")
 geoparam.grid(row=0,column=1,columnspan=3,sticky="n")
 
 #Image/SRA Toggle
-imgsratog = createOptionLabel(masterIn=geopar_frame, textIn="Image/SRA Toggle: ", helpText="helpimgsratog", rowIn=1, colIn=1)
-variables["imgsratogtog_var"].set('False')
-imgsratogtog_n = Checkbutton(master=geopar_frame,variable=variables["imgsratogtog_var"],command=imgsratoggle, onvalue='True', offvalue='False')
+imgsratog = createOptionLabel(masterIn=geopar_frame, textIn="Use SRA instead of image: ", helpText="helpimgsratog", rowIn=1, colIn=1)
+variables["imgsratogtog_var"].set('image')
+imgsratogtog_n = Checkbutton(master=geopar_frame,variable=variables["imgsratogtog_var"],command=imgsratoggle, onvalue='sra', offvalue='image')
 imgsratogtog_n.grid(row=1, column=2, sticky="w")
 
 #Height Map Image
