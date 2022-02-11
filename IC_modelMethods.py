@@ -9,11 +9,11 @@ def system_check(variables):
     returnString = ""
 
     returnString += "Configuration Compatability Check:\n"
-    check_year = variables["orbp_var"]
-    check_day = variables["rot_var"]
-    check_time = variables["tmestp_var"]
-    check_run = variables["runstp_var"]
-    check_nsptw = variables["nsptw_var"]
+    check_year = variables["orbitalPeriod_var"]
+    check_day = variables["rotationPeriod_var"]
+    check_time = variables["timeStep_var"]
+    check_run = variables["runStep_var"]
+    check_nsptw = variables["stepsPerWrite_var"]
     time_check = (24*60)/check_time
 
     if time_check == round(time_check):
