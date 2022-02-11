@@ -1,5 +1,9 @@
 import os
 from convert_sra import convert_sra
+import ntpath
+import shutil
+from os import path
+
 def system_check(variables):
 
     returnString = ""
@@ -165,7 +169,7 @@ def save_file(variables, filepath):
     """Convert heightmap image to SRA files."""
     if aquaptext == "False":
         aquaplanetext = ''
-        if imgsratext == "False":
+        if imgsratext == "image":
 
             landmaptext, topomaptext = convert_sra(
                 filepath=filepath,
